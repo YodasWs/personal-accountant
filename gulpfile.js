@@ -179,11 +179,6 @@ options = {
 			path: 'min.js'
 		}
 	},
-	livereload:{
-		originalPath: `http://localhost:${argv.post}/personal-accountant`,
-		applyCSSLive: false,
-		port: argv.port,
-	},
 	server:{
 		path: '/personal-accountant/',
 		directoryListing: false,
@@ -313,7 +308,7 @@ gulp.task('serve', () => {
 
 gulp.task('default', gulp.series(
 	'compile',
-	// Ugh, can't watch on a Windows yet >_<
+	// Ugh, can't watch on Windows yet >_<
 //	'watch',
 	'serve'
 ))
