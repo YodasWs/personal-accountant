@@ -19,13 +19,13 @@ plugins = {
 	server: require('gulp-webserver'),
 	prefixCSS: require('gulp-autoprefixer'),
 	sourcemaps: require('gulp-sourcemaps'),
-	rmLines: require('gulp-delete-lines'),
 	lintSass: require('gulp-sass-lint'),
+	rmLines: require('gulp-rm-lines'),
 	compileSass: require('gulp-sass'),
-	addHeader: require('gulp-header'),
 	compileJS: require('gulp-babel'),
 	concat: require('gulp-concat'),
 	lintES: require('gulp-eslint'),
+	sort: require('gulp-order'),
 	ssi: require('gulp-ssi'),
 	path: require('path'),
 },
@@ -59,7 +59,7 @@ options = {
 	},
 	lintSass:{
 		files: {
-			ignore: '**/*.css'
+			ignore: '**/*.min.css'
 		},
 		rules: {
 
@@ -90,7 +90,7 @@ options = {
 'no-trailing-whitespace': 1,
 'no-trailing-zero': 1,
 'no-transition-all': 1,
-'no-universal-selectors': 1,
+'no-universal-selectors': 0,
 'no-url-domains': 1,
 'no-url-protocols': 1,
 'no-vendor-prefixes': 1,
@@ -157,18 +157,10 @@ options = {
 		cascade: false
 	},
 	dest: 'docs/',
-	addHeader:{
-		css:(function(){
-			// properties found at https://github.com/gulpjs/vinyl
-			return '/* <%= file.relative %> */\n'
-		})(),
-		js:(function(){
-			return ''
-		})()
-	},
 	rmLines:{
 		filters:[
-			'^\s*$',
+			/^[\'"]use strict[\'"];$/,
+			/^\s*$/
 		]
 	},
 	concat:{
@@ -185,12 +177,26 @@ options = {
 		defaultFile: 'index.html',
 		port: argv.port,
 	},
+	sort:{
+		css:[
+			'src/main.scss',
+			'src/**/*.{sa,sc,c}ss',
+		],
+		js:[
+			'src/app.js',
+			'src/**/*.js',
+		]
+	},
 	ssi:{
 		root: 'src'
 	}
 }
 
-function runTasks ( stream, tasks, fileType='static' ) {
+function runTasks(task) {
+	const fileType = task.fileType || 'static'
+	let stream = gulp.src(task.src)
+	const tasks = task.tasks
+
 	// Output Linting Results
 	;[
 		'lintSass',
@@ -205,8 +211,10 @@ function runTasks ( stream, tasks, fileType='static' ) {
 			tasks.splice(tasks.indexOf(task), 1)
 		}
 	})
+
 	// Init Sourcemaps
 	stream = stream.pipe(plugins.sourcemaps.init())
+
 	// Run each task
 	if (tasks.length) for (let i=0, k=tasks.length; i<k; i++) {
 		let option = options[tasks[i]] || {}
@@ -214,6 +222,7 @@ function runTasks ( stream, tasks, fileType='static' ) {
 		stream = stream.pipe(plugins[tasks[i]](option))
 		if (plugins[tasks[i]].failOnError) stream = stream.pipe(plugins[tasks[i]].failOnError())
 	}
+
 	// Write Sourcemap
 	stream = stream.pipe(plugins.sourcemaps.write())
 	// Output Files
@@ -224,7 +233,6 @@ function runTasks ( stream, tasks, fileType='static' ) {
 	{
 		name: 'compile:sass',
 		src: [
-			'src/main.{sa,sc,c}ss',
 			'src/**/*.{sa,sc,c}ss',
 			'!**/*.min.css',
 			'!**/min.css'
@@ -233,7 +241,7 @@ function runTasks ( stream, tasks, fileType='static' ) {
 			'lintSass',
 			'compileSass',
 			'prefixCSS',
-			'addHeader',
+			'sort',
 			'concat',
 			'rmLines',
 		],
@@ -249,9 +257,8 @@ function runTasks ( stream, tasks, fileType='static' ) {
 		tasks: [
 			'lintES',
 			'compileJS',
-			'addHeader',
-			'concat',
 			'rmLines',
+			'concat',
 		],
 		fileType: 'js'
 	},
@@ -278,19 +285,29 @@ function runTasks ( stream, tasks, fileType='static' ) {
 	}
 ].forEach((task) => {
 	gulp.task(task.name, () => {
-		return runTasks(gulp.src(task.src), task.tasks, task.fileType)
+		return runTasks(task)
 	})
 })
 
 gulp.task('lint:sass', () => {
 	return gulp.src([
-		'src/main.{sa,sc,c}ss',
 		'src/**/*.{sa,sc,c}ss',
 		'!**/*.min.css',
 		'!**/min.css'
 	])
 		.pipe(plugins.lintSass(options.lintSass))
 		.pipe(plugins.lintSass.format())
+})
+
+gulp.task('lint:js', () => {
+	return gulp.src([
+		'src/**/*.js',
+		'!**/*.min.js',
+		'!**/min.js'
+	])
+		.pipe(plugins.lintES(options.lintES))
+		.pipe(plugins.lintES.failOnError())
+		.pipe(plugins.lintES.format())
 })
 
 gulp.task('compile', gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files'))
