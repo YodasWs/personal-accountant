@@ -233,6 +233,7 @@ function runTasks(task) {
 
 	// Write Sourcemap
 	stream = stream.pipe(plugins.sourcemaps.write())
+
 	// Output Files
 	return stream.pipe(gulp.dest(options.dest))
 }
@@ -283,7 +284,7 @@ function runTasks(task) {
 		fileType: 'html'
 	},
 	{
-		name: 'transfer-files',
+		name: 'transfer:assets',
 		src: [
 			'./src/**/*.jp{,e}g',
 			'./src/**/*.gif',
@@ -318,6 +319,16 @@ gulp.task('lint:js', () => {
 		.pipe(plugins.lintES.failOnError())
 		.pipe(plugins.lintES.format())
 })
+
+gulp.task('transfer:res', () => {
+	return gulp.src([
+		'./node_modules/angular/angular.min.js',
+		'./node_modules/angular-route/angular-route.min.js',
+	])
+		.pipe(gulp.dest(plugins.path.join(options.dest, 'res')))
+})
+
+gulp.task('transfer-files', gulp.parallel('transfer:assets', 'transfer:res'))
 
 gulp.task('compile', gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files'))
 
