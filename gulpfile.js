@@ -32,14 +32,17 @@ plugins = {
 
 options = {
 	compileJS:{
-		comments:false,
+		comments: false,
+		minified: true,
+		babelrc: false,
+		compact: true,
 		plugins: [
 			'transform-exponentiation-operator',
 			'transform-remove-console'
 		],
 		presets: [
+			'es2015',
 			'react',
-			'es2015'
 		]
 	},
 	compileSass:{
@@ -51,10 +54,18 @@ options = {
 			es6: true
 		},
 		rules: {
-			strict: [
-				'error',
-				'global'
-			]
+			'strict': [
+				2, 'global'
+			],
+			'indent': [
+				2, 'tab'
+			],
+			'space-before-function-paren': 0,
+			'comma-dangle': 0,
+			'no-console': 0,
+			'no-undef': 0,
+			'no-tabs': 0,
+			'semi': 0,
 		}
 	},
 	lintSass:{
@@ -115,10 +126,7 @@ options = {
 'hex-length': 1,
 'hex-notation': 1,
 'indentation': [
-	2,
-	{
-		size: 'tab'
-	}
+	2, { size: 'tab' }
 ],
 'leading-zero': 1,
 'max-line-length': 1,
@@ -256,9 +264,10 @@ function runTasks(task) {
 		],
 		tasks: [
 			'lintES',
-			'compileJS',
-			'rmLines',
+			'sort',
 			'concat',
+			'rmLines',
+			'compileJS',
 		],
 		fileType: 'js'
 	},
@@ -325,7 +334,7 @@ gulp.task('serve', () => {
 
 gulp.task('default', gulp.series(
 	'compile',
-	// Ugh, can't watch on Windows yet >_<
-//	'watch',
 	'serve'
+	// Ugh, can't watch on Windows yet >_<
+	,'watch'
 ))
