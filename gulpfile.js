@@ -128,8 +128,10 @@ options = {
 'indentation': [
 	2, { size: 'tab' }
 ],
-'leading-zero': 1,
-'max-line-length': 1,
+'leading-zero': [
+	2, { include: true }
+],
+'max-line-length': 0,
 'max-file-line-count': 1,
 'nesting-depth': 1,
 'property-sort-order': 0,
@@ -147,7 +149,7 @@ options = {
 'space-after-bang': 1,
 'space-between-parens': 1,
 'space-around-operator': 1,
-'trailing-semicolon': 1,
+'trailing-semicolon': 2,
 'final-newline': 1
 
 		}
@@ -217,7 +219,6 @@ function runTasks(task) {
 			if (option[fileType]) option = option[fileType]
 			stream = stream.pipe(plugins[task](option))
 			stream = stream.pipe(plugins[task].format())
-			stream = stream.pipe(plugins[task].failOnError())
 		}
 	})
 
@@ -230,7 +231,6 @@ function runTasks(task) {
 		let option = options[tasks[i]] || {}
 		if (option[fileType]) option = option[fileType]
 		stream = stream.pipe(plugins[tasks[i]](option))
-		if (plugins[tasks[i]].failOnError) stream = stream.pipe(plugins[tasks[i]].failOnError())
 	}
 
 	// Write Sourcemap
@@ -308,6 +308,7 @@ gulp.task('lint:sass', () => {
 		'!**/min.css'
 	])
 		.pipe(plugins.lintSass(options.lintSass))
+		.pipe(plugins.lintSass.failOnError())
 		.pipe(plugins.lintSass.format())
 })
 
@@ -322,6 +323,8 @@ gulp.task('lint:js', () => {
 		.pipe(plugins.lintES.format())
 })
 
+gulp.task('lint', gulp.parallel('lint:sass', 'lint:js'))
+
 gulp.task('transfer:res', () => {
 	return gulp.src([
 		'./node_modules/angular/angular.min.js',
@@ -332,7 +335,10 @@ gulp.task('transfer:res', () => {
 
 gulp.task('transfer-files', gulp.parallel('transfer:assets', 'transfer:res'))
 
-gulp.task('compile', gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files'))
+gulp.task('compile', gulp.series(
+	'lint',
+	gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files')
+))
 
 gulp.task('watch', () => {
 	gulp.watch('./src/**/*.{sa,sc,c}ss', gulp.series('compile:sass'))
