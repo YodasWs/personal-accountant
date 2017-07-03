@@ -82,10 +82,10 @@ options = {
 'empty-line-between-blocks': 1,
 'single-line-per-selector': 1,
 'no-attribute-selectors': 1,
-'no-color-hex': 1,
-'no-color-keywords': 1,
+'no-color-hex': 0,
+'no-color-keywords': 0,
 'no-color-literals': 1,
-'no-combinators': 1,
+'no-combinators': 0,
 'no-css-comments': 1,
 'no-debug': 1,
 'no-disallowed-properties': 1,
@@ -183,6 +183,8 @@ options = {
 		path: '/personal-accountant/',
 		directoryListing: false,
 		defaultFile: 'index.html',
+		// Ugh, can't watch on Windows yet >_<
+		// livereload: true,
 		port: argv.port,
 	},
 	sort:{
@@ -216,7 +218,6 @@ function runTasks(task) {
 			stream = stream.pipe(plugins[task](option))
 			stream = stream.pipe(plugins[task].format())
 			stream = stream.pipe(plugins[task].failOnError())
-			tasks.splice(tasks.indexOf(task), 1)
 		}
 	})
 
@@ -225,6 +226,7 @@ function runTasks(task) {
 
 	// Run each task
 	if (tasks.length) for (let i=0, k=tasks.length; i<k; i++) {
+		if (['lintSass', 'lintES'].indexOf(tasks[i]) !== -1) continue;
 		let option = options[tasks[i]] || {}
 		if (option[fileType]) option = option[fileType]
 		stream = stream.pipe(plugins[tasks[i]](option))
