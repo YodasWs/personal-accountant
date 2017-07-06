@@ -1,19 +1,25 @@
 'use strict';
 
 const argv = require('yargs')
-	.usage('$0 <command> [options]')
-	.command(['serve', '*'], 'Build and serve component library', {
+	.usage("\n\x1b[1mUsage:\x1b[0m gulp \x1b[36m<command>\x1b[0m \x1b[34m[options]\x1b[0m")
+	.command(['serve', '*'], 'Compile files and start server', {
 		port: {
 			describe: 'The server port to listen to',
+			type: 'number',
 			default: 3000,
 			alias: 'p'
 		}
 	})
+	.command('compile', 'Compile all files and output to docs folder')
+	.command('lint', 'Lint all JavaScript and Sass/SCSS files')
+	.command('transfer-files', 'Transfer all static assets and resources to docs folder')
+	.command('watch', 'Watch files for changes to recompile')
 	.help('?')
-	.epilog('(C) 2017 Samuel B Grundman')
+	.epilog(' ©2017 Samuel B Grundman')
 	.argv
 
 const gulp = require('gulp'),
+	path = require('path'),
 
 plugins = {
 	server: require('gulp-webserver'),
@@ -27,7 +33,6 @@ plugins = {
 	lintES: require('gulp-eslint'),
 	sort: require('gulp-order'),
 	ssi: require('gulp-ssi'),
-	path: require('path'),
 },
 
 options = {
@@ -49,6 +54,9 @@ options = {
 		outputStyle: 'compressed'
 	},
 	lintES:{
+		parserOptions: {
+			ecmaVersion: 2015,
+		},
 		env: {
 			browser: true,
 			es6: true
@@ -191,12 +199,14 @@ options = {
 	},
 	sort:{
 		css:[
-			'src/main.scss',
-			'src/**/*.{sa,sc,c}ss',
+			'css/main.scss',
+			'components/**/*.{sa,sc,c}ss',
+			'**/*.{sa,sc,c}ss',
 		],
 		js:[
-			'src/app.js',
-			'src/**/*.js',
+			'components/**/module.js',
+			'components/**/*.js',
+			'app.js',
 		]
 	},
 	ssi:{
@@ -278,7 +288,7 @@ function runTasks(task) {
 		name: 'compile:html',
 		src: [
 			'./src/**/*.html',
-			'!**/components/**/*.html'
+			'!**/includes/**/*.html'
 		],
 		tasks: [
 			'ssi',
@@ -330,7 +340,7 @@ gulp.task('transfer:res', () => {
 		'./node_modules/angular/angular.min.js',
 		'./node_modules/angular-route/angular-route.min.js',
 	])
-		.pipe(gulp.dest(plugins.path.join(options.dest, 'res')))
+		.pipe(gulp.dest(path.join(options.dest, 'res')))
 })
 
 gulp.task('transfer-files', gulp.parallel('transfer:assets', 'transfer:res'))
@@ -355,5 +365,5 @@ gulp.task('default', gulp.series(
 	'compile',
 	'serve'
 	// Ugh, can't watch on Windows yet >_<
-	,'watch'
+//	,'watch'
 ))
