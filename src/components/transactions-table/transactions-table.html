@@ -1,0 +1,23 @@
+<table>
+<thead>
+<tr class="actions">
+	<td colspan="5"><a href="add-transaction/">+ Add</a></td>
+</tr>
+<tr>
+	<th>Date</th>
+	<th>Description</th>
+	<th>Category</th>
+	<th>Account</th>
+	<th>Amount</th>
+</tr>
+</thead>
+<tbody ng-if="$ctrl.transactions">
+<tr ng-repeat="transaction in $ctrl.transactions">
+	<td>{{ transaction.date | strDate }}</td>
+	<td>{{transaction.description}}</td>
+	<td>{{transaction.category}}</td>
+	<td>{{transaction.account}}</td>
+	<td class="amount">{{transaction.amount | currency}}</td>
+</tr>
+</tbody>
+</table>
