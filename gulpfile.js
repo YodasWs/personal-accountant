@@ -219,6 +219,7 @@ options = {
 		path: '/personal-accountant/',
 		directoryListing: false,
 		defaultFile: 'index.html',
+		fallback: 'index.html',
 		// Ugh, can't watch on Windows yet >_<
 		// livereload: true,
 		port: argv.port,
@@ -231,6 +232,8 @@ options = {
 		],
 		js:[
 			'components/**/module.js',
+			'pages/**/module.js',
+			'pages/**/*.js',
 			'components/**/*.js',
 			'app.js',
 		]
@@ -325,9 +328,10 @@ function runTasks(task) {
 		name: 'transfer:assets',
 		src: [
 			'./src/**/*.jp{,e}g',
+			'./src/**/*.json',
 			'./src/**/*.gif',
 			'./src/**/*.png',
-			'./src/**/*.ttf'
+			'./src/**/*.ttf',
 		],
 		tasks: []
 	}
@@ -387,17 +391,40 @@ gulp.task('serve', () => {
 		.pipe(plugins.server(options.server))
 })
 
-gulp.task('generate:page', cli([
-	`mkdir -pv ./src/pages/${argv.name}`,
-	`touch -a ./src/pages/${argv.name}/${argv.name}.html`,
-	`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
-	`git status`,
-]))
+gulp.task('generate:page', gulp.series(
+	cli([
+		`mkdir -pv ./src/pages/${argv.name}`,
+		`touch -a ./src/pages/${argv.name}/${argv.name}.html`,
+		`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
+	]),
+	() => {
+		const str = `'use strict';\n\nangular.module('${camelCase(argv.name)}', [\n\t'ngRoute',\n])\n`
+		return plugins.newFile('module.js', str, { src: true })
+			.pipe(gulp.dest(`./src/pages/${argv.name}`))
+	},
+	() => {
+		const str = `'use strict';\n
+angular.module('${camelCase(argv.name)}')
+.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+	$routeProvider.when('/${argv.name}', {
+		templateUrl: 'pages/${argv.name}/${argv.name}.html',
+	})
+}])
+		`
+		return plugins.newFile(`${argv.name}.js`, str, { src: true })
+			.pipe(gulp.dest(`./src/pages/${argv.name}`))
+	},
+	// TODO: Add to app.module.js
+	cli([
+		`git status`,
+	])
+))
 
 gulp.task('generate:component', gulp.series(
 	cli([
 		`mkdir -pv src/components/${argv.name}`,
-		`touch -a src/components/${argv.name}.html`,
+		`touch -a src/components/${argv.name}/${argv.name}.html`,
+		`touch -a src/components/${argv.name}/${argv.name}.scss`,
 	]),
 	() => {
 		const str = `'use strict';\n\nangular.module('${camelCase(argv.name)}', [])\n`
@@ -415,6 +442,7 @@ angular.module('${camelCase(argv.name)}')
 		return plugins.newFile(`${argv.name}.js`, str, { src: true })
 			.pipe(gulp.dest(`./src/components/${argv.name}`))
 	},
+	// TODO: Add to app.module.js
 	cli([
 		`git status`,
 	])
