@@ -5,11 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <base href="/personal-accountant/"/>
 <link rel="stylesheet" href="min.css"/>
+<script src="res/angular.min.js"></script>
+<script src="res/angular-route.min.js"></script>
 <script src="min.js"></script>
 <title>Personal Accountant</title>
 </head>
-<body>
-	<h1>Hello World</h1>
-	<ng-view></ng-view>
+<body ng-cloak>
+<header>
+	<h1>Personal Accountant</h1>
+</header>
+<app-nav></app-nav>
+<main ng-view></main>
 </body>
 </html>

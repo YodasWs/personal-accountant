@@ -1,5 +1,15 @@
 'use strict';
 
+function camelCase(name) {
+	name = name.split('-')
+	if (name.length > 1) {
+		for (let i=1; i<name.length; i++) {
+			name[i] = name[i].charAt(0).toUpperCase() + name[i].slice(1)
+		}
+	}
+	return name.join('')
+}
+
 const argv = require('yargs')
 	.usage("\n\x1b[1mUsage:\x1b[0m gulp \x1b[36m<command>\x1b[0m \x1b[34m[options]\x1b[0m")
 	.command(['serve', '*'], 'Compile files and start server', {
@@ -11,6 +21,20 @@ const argv = require('yargs')
 		}
 	})
 	.command('compile', 'Compile all files and output to docs folder')
+	.command('generate:component', 'Generate a new component', {
+		name: {
+			describe: 'Name for your new component',
+			required: true,
+			alias: 'n',
+		},
+	})
+	.command('generate:page', 'Generate a new page', {
+		name: {
+			describe: 'Name for your new page',
+			required: true,
+			alias: 'n',
+		},
+	})
 	.command('lint', 'Lint all JavaScript and Sass/SCSS files')
 	.command('transfer-files', 'Transfer all static assets and resources to docs folder')
 	.command('watch', 'Watch files for changes to recompile')
@@ -19,6 +43,7 @@ const argv = require('yargs')
 	.argv
 
 const gulp = require('gulp'),
+	cli = require('gulp-run-command').default,
 	path = require('path'),
 
 plugins = {
@@ -31,6 +56,7 @@ plugins = {
 	compileJS: require('gulp-babel'),
 	concat: require('gulp-concat'),
 	lintES: require('gulp-eslint'),
+	newFile: require('gulp-file'),
 	sort: require('gulp-order'),
 	ssi: require('gulp-ssi'),
 },
@@ -199,7 +225,7 @@ options = {
 	},
 	sort:{
 		css:[
-			'css/main.scss',
+			'main.scss',
 			'components/**/*.{sa,sc,c}ss',
 			'**/*.{sa,sc,c}ss',
 		],
@@ -360,6 +386,39 @@ gulp.task('serve', () => {
 	return gulp.src('./docs/')
 		.pipe(plugins.server(options.server))
 })
+
+gulp.task('generate:page', cli([
+	`mkdir -pv ./src/pages/${argv.name}`,
+	`touch -a ./src/pages/${argv.name}/${argv.name}.html`,
+	`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
+	`git status`,
+]))
+
+gulp.task('generate:component', gulp.series(
+	cli([
+		`mkdir -pv src/components/${argv.name}`,
+		`touch -a src/components/${argv.name}.html`,
+	]),
+	() => {
+		const str = `'use strict';\n\nangular.module('${camelCase(argv.name)}', [])\n`
+		return plugins.newFile('module.js', str, { src: true })
+			.pipe(gulp.dest(`./src/components/${argv.name}`))
+	},
+	() => {
+		const str = `'use strict';\n
+angular.module('${camelCase(argv.name)}')
+.component('${camelCase(argv.name)}', {
+\ttemplateUrl: 'components/${argv.name}/${argv.name}.html',
+\tcontroller() {
+\t}
+})\n`
+		return plugins.newFile(`${argv.name}.js`, str, { src: true })
+			.pipe(gulp.dest(`./src/components/${argv.name}`))
+	},
+	cli([
+		`git status`,
+	])
+))
 
 gulp.task('default', gulp.series(
 	'compile',

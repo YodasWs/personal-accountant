@@ -1,0 +1,16 @@
+body > app-nav {
+	display: block;
+	width: block;
+
+	> nav {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-around;
+		align-content: flex-start;
+		align-items: flex-start;
+
+		> * {
+			display: block;
+		}
+	}
+}
