@@ -50,6 +50,8 @@ plugins = {
 	server: require('gulp-webserver'),
 	prefixCSS: require('gulp-autoprefixer'),
 	sourcemaps: require('gulp-sourcemaps'),
+	compileHTML: require('gulp-htmlmin'),
+	lintHTML: require('gulp-html-lint'),
 	lintSass: require('gulp-sass-lint'),
 	rmLines: require('gulp-rm-lines'),
 	compileSass: require('gulp-sass'),
@@ -78,6 +80,16 @@ options = {
 	},
 	compileSass:{
 		outputStyle: 'compressed'
+	},
+	compileHTML:{
+		collapseWhitespace: true,
+		decodeEntities: true,
+		keepClosingSlash: true,
+		removeComments: true,
+		removeRedundantAttributes: true,
+		removeScriptTypeAttributes: true,
+		removeStyleLinkTypeAttributes: true,
+		useShortDoctype: true,
 	},
 	lintES:{
 		parserOptions: {
@@ -188,6 +200,44 @@ options = {
 
 		}
 	},
+	lintHTML:{
+		useHtmllintrc: false,
+		rules: {
+
+'attr-name-style': 'dash',
+'attr-no-dup': true,
+'attr-req-value': false,
+'class-name-style': 'dash',
+'class-no-dup': true,
+'doctype-html5': true,
+'fig-req-figcaption': false,
+'head-req-title': true,
+'head-valid-content-model': true,
+'html-req-lang': true,
+'id-class-style': 'dash',
+'id-no-dup': true,
+'img-req-alt': true,
+'img-req-src': true,
+'indent-style': 'tabs',
+'indent-width-cont': true,
+'input-radio-req-name': true,
+'input-req-label': true,
+'label-req-for': true,
+'line-end-style': 'lf',
+'table-req-caption': false,
+'table-req-header': false, // this is buggy in htmllint (https://github.com/htmllint/htmllint/issues/197)
+'tag-bans': [
+	'acronym','applet','basefont','big','blink','center','font','frame','frameset','isindex','noframes','marquee',
+	'style',
+],
+'tag-close': true,
+'tag-name-lowercase': true,
+'tag-name-match': true,
+'tag-self-close': 'always',
+'title-no-dup': true,
+
+		}
+	},
 	prefixCSS:{
 		// more options at https://github.com/postcss/autoprefixer#options
 		browsers: [
@@ -250,6 +300,7 @@ function runTasks(task) {
 
 	// Output Linting Results
 	;[
+		'lintHTML',
 		'lintSass',
 		'lintES'
 	].forEach((task) => {
@@ -266,7 +317,7 @@ function runTasks(task) {
 
 	// Run each task
 	if (tasks.length) for (let i=0, k=tasks.length; i<k; i++) {
-		if (['lintSass', 'lintES'].indexOf(tasks[i]) !== -1) continue;
+		if (['lintHTML', 'lintSass', 'lintES'].indexOf(tasks[i]) !== -1) continue;
 		let option = options[tasks[i]] || {}
 		if (option[fileType]) option = option[fileType]
 		stream = stream.pipe(plugins[tasks[i]](option))
@@ -320,7 +371,9 @@ function runTasks(task) {
 			'!**/includes/**/*.html'
 		],
 		tasks: [
+			'lintHTML',
 			'ssi',
+			'compileHTML',
 		],
 		fileType: 'html'
 	},
@@ -339,6 +392,15 @@ function runTasks(task) {
 	gulp.task(task.name, () => {
 		return runTasks(task)
 	})
+})
+
+gulp.task('lint:html', () => {
+	return gulp.src([
+		'src/**/*.html',
+	])
+		.pipe(plugins.lintHTML(options.lintHTML))
+		.pipe(plugins.lintHTML.failOnError())
+		.pipe(plugins.lintHTML.format())
 })
 
 gulp.task('lint:sass', () => {
@@ -363,7 +425,7 @@ gulp.task('lint:js', () => {
 		.pipe(plugins.lintES.format())
 })
 
-gulp.task('lint', gulp.parallel('lint:sass', 'lint:js'))
+gulp.task('lint', gulp.parallel('lint:sass', 'lint:js', 'lint:html'))
 
 gulp.task('transfer:res', () => {
 	return gulp.src([
