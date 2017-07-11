@@ -100,18 +100,20 @@ options = {
 			es6: true
 		},
 		rules: {
-			'strict': [
-				2, 'global'
-			],
-			'indent': [
-				2, 'tab'
-			],
-			'space-before-function-paren': 0,
-			'comma-dangle': 0,
-			'no-console': 0,
-			'no-undef': 0,
-			'no-tabs': 0,
-			'semi': 0,
+
+'strict': [
+	2, 'global'
+],
+'indent': [
+	2, 'tab'
+],
+'space-before-function-paren': 0,
+'comma-dangle': 0,
+'no-console': 0,
+'no-undef': 0,
+'no-tabs': 0,
+'semi': 0,
+
 		}
 	},
 	lintSass:{
@@ -135,7 +137,11 @@ options = {
 'no-css-comments': 1,
 'no-debug': 1,
 'no-disallowed-properties': 1,
-'no-duplicate-properties': 1,
+'no-duplicate-properties': [
+	1, { exclude: [
+		'display',
+	]}
+],
 'no-empty-rulesets': 1,
 'no-extends': 1,
 'no-ids': 1,
@@ -155,7 +161,7 @@ options = {
 'property-units': 1,
 'declarations-before-nesting': 1,
 'force-attribute-nesting': 1,
-'force-element-nesting': 1,
+'force-element-nesting': 0,
 'force-pseudo-nesting': 1,
 'class-name-format': 1,
 'function-name-format': 1,
@@ -169,7 +175,9 @@ options = {
 'brace-style': 1,
 'clean-import-paths': 1,
 'empty-args': 1,
-'hex-length': 1,
+'hex-length': [
+	2, { style: 'long' }
+],
 'hex-notation': 1,
 'indentation': [
 	2, { size: 'tab' }
@@ -196,7 +204,7 @@ options = {
 'space-between-parens': 1,
 'space-around-operator': 1,
 'trailing-semicolon': 2,
-'final-newline': 1
+'final-newline': 2
 
 		}
 	},
