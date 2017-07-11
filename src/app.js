@@ -22,6 +22,7 @@ window.myBooks = {
 angular.module('myBooks', [
 	'transactionsTable',
 	'pageEditTransaction',
+	'pageAccounts',
 	'ngRoute',
 	'appNav',
 ])
