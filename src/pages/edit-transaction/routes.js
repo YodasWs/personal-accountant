@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('editTransaction')
+angular.module('pageEditTransaction')
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
 	$routeProvider.when('/edit-transaction/:id', {
 		templateUrl: 'pages/edit-transaction/edit-transaction.html',

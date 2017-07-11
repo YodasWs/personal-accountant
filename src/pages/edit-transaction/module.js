@@ -1,5 +1,5 @@
 'use strict';
 
-angular.module('editTransaction', [
+angular.module('pageEditTransaction', [
 	'ngRoute',
 ])

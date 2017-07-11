@@ -468,20 +468,19 @@ gulp.task('generate:page', gulp.series(
 		`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
 	]),
 	() => {
-		const str = `'use strict';\n\nangular.module('${camelCase(argv.name)}', [\n\t'ngRoute',\n])\n`
+		const str = `'use strict';\n\nangular.module('${camelCase('page '+argv.name)}', [\n\t'ngRoute',\n])\n`
 		return plugins.newFile('module.js', str, { src: true })
 			.pipe(gulp.dest(`./src/pages/${argv.name}`))
 	},
 	() => {
 		const str = `'use strict';\n
-angular.module('${camelCase(argv.name)}')
+angular.module('${camelCase('page '+argv.name)}')
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
 	$routeProvider.when('/${argv.name}', {
 		templateUrl: 'pages/${argv.name}/${argv.name}.html',
 	})
-}])
-		`
-		return plugins.newFile(`${argv.name}.js`, str, { src: true })
+}])\n`
+		return plugins.newFile(`routes.js`, str, { src: true })
 			.pipe(gulp.dest(`./src/pages/${argv.name}`))
 	},
 	// TODO: Add to app.module.js
@@ -497,14 +496,14 @@ gulp.task('generate:component', gulp.series(
 		`touch -a src/components/${argv.name}/${argv.name}.scss`,
 	]),
 	() => {
-		const str = `'use strict';\n\nangular.module('${camelCase(argv.name)}', [])\n`
+		const str = `'use strict';\n\nangular.module('${camelCase('comp '+argv.name)}', [])\n`
 		return plugins.newFile('module.js', str, { src: true })
 			.pipe(gulp.dest(`./src/components/${argv.name}`))
 	},
 	() => {
 		const str = `'use strict';\n
-angular.module('${camelCase(argv.name)}')
-.component('${camelCase(argv.name)}', {
+angular.module('${camelCase('comp '+argv.name)}')
+.component('${camelCase('comp '+argv.name)}', {
 \ttemplateUrl: 'components/${argv.name}/${argv.name}.html',
 \tcontroller() {
 \t}
