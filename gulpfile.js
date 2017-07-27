@@ -246,6 +246,44 @@ options = {
 
 		}
 	},
+	lintHTML:{
+		useHtmllintrc: false,
+		rules: {
+
+'attr-name-style': 'dash',
+'attr-no-dup': true,
+'attr-req-value': false,
+'class-name-style': 'dash',
+'class-no-dup': true,
+'doctype-html5': true,
+'fig-req-figcaption': false,
+'head-req-title': true,
+'head-valid-content-model': true,
+'html-req-lang': true,
+'id-class-style': 'dash',
+'id-no-dup': true,
+'img-req-alt': true,
+'img-req-src': true,
+'indent-style': 'tabs',
+'indent-width-cont': true,
+'input-radio-req-name': true,
+'input-req-label': true,
+'label-req-for': true,
+'line-end-style': 'lf',
+'table-req-caption': false,
+'table-req-header': false, // this is buggy in htmllint (https://github.com/htmllint/htmllint/issues/197)
+'tag-bans': [
+	'acronym','applet','basefont','big','blink','center','font','frame','frameset','isindex','noframes','marquee',
+	'style',
+],
+'tag-close': true,
+'tag-name-lowercase': true,
+'tag-name-match': true,
+'tag-self-close': 'always',
+'title-no-dup': true,
+
+		}
+	},
 	prefixCSS:{
 		// more options at https://github.com/postcss/autoprefixer#options
 		browsers: [
@@ -289,10 +327,8 @@ options = {
 			'**/*.{sa,sc,c}ss',
 		],
 		js:[
-			'components/**/module.js',
-			'pages/**/module.js',
-			'pages/**/*.js',
-			'components/**/*.js',
+			'**/module.js',
+			'{components,pages}/**/*.js',
 			'app.js',
 		]
 	},
@@ -437,8 +473,8 @@ gulp.task('lint', gulp.parallel('lint:sass', 'lint:js', 'lint:html'))
 
 gulp.task('transfer:res', () => {
 	return gulp.src([
-		'./node_modules/angular/angular.min.js',
-		'./node_modules/angular-route/angular-route.min.js',
+		'./node_modules/angular/angular.min.js{,.map}',
+		'./node_modules/angular-route/angular-route.min.js{,.map}',
 	])
 		.pipe(gulp.dest(path.join(options.dest, 'res')))
 })
@@ -468,13 +504,13 @@ gulp.task('generate:page', gulp.series(
 		`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
 	]),
 	() => {
-		const str = `'use strict';\n\nangular.module('${camelCase('page '+argv.name)}', [\n\t'ngRoute',\n])\n`
+		const str = `'use strict';\n\nangular.module('${camelCase('page-'+argv.name)}', [\n\t'ngRoute',\n])\n`
 		return plugins.newFile('module.js', str, { src: true })
 			.pipe(gulp.dest(`./src/pages/${argv.name}`))
 	},
 	() => {
 		const str = `'use strict';\n
-angular.module('${camelCase('page '+argv.name)}')
+angular.module('${camelCase('page-'+argv.name)}')
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
 	$routeProvider.when('/${argv.name}', {
 		templateUrl: 'pages/${argv.name}/${argv.name}.html',
@@ -496,14 +532,14 @@ gulp.task('generate:component', gulp.series(
 		`touch -a src/components/${argv.name}/${argv.name}.scss`,
 	]),
 	() => {
-		const str = `'use strict';\n\nangular.module('${camelCase('comp '+argv.name)}', [])\n`
+		const str = `'use strict';\n\nangular.module('${camelCase('comp-'+argv.name)}', [])\n`
 		return plugins.newFile('module.js', str, { src: true })
 			.pipe(gulp.dest(`./src/components/${argv.name}`))
 	},
 	() => {
 		const str = `'use strict';\n
-angular.module('${camelCase('comp '+argv.name)}')
-.component('${camelCase('comp '+argv.name)}', {
+angular.module('${camelCase('comp-'+argv.name)}')
+.component('${camelCase('comp-'+argv.name)}', {
 \ttemplateUrl: 'components/${argv.name}/${argv.name}.html',
 \tcontroller() {
 \t}
