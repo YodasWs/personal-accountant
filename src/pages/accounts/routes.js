@@ -8,6 +8,6 @@ angular.module('pageAccounts')
 	$routeProvider.when('/accounts', {
 		templateUrl: 'pages/accounts/accounts.html',
 		controller: 'ctrlAccounts',
-		constrollerAs: '$ctrl',
+		controllerAs: '$ctrl',
 	})
 }])
