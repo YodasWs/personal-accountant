@@ -24,7 +24,6 @@ angular.module('myBooks', [
 	'pageEditTransaction',
 	'compEquityTable',
 	'pageAccounts',
-	'pageOrgs',
 	'ngRoute',
 ])
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
