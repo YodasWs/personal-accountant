@@ -23,8 +23,8 @@ angular.module('myBooks', [
 	'transactionsTable',
 	'pageEditTransaction',
 	'pageAccounts',
+	'pageOrgs',
 	'ngRoute',
-	'appNav',
 ])
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
 	$locationProvider.html5Mode(true);
