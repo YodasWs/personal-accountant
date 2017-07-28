@@ -1,0 +1,33 @@
+equity-table {
+	display: block;
+	display: contents;
+
+	> table {
+		width: 100%;
+		border-collapse: collapse;
+		border: 1px solid lightgrey;
+	}
+
+	td,
+	th {
+		padding: 2px 5px;
+	}
+
+	tbody tr {
+		border-top: 1px solid lightgrey;
+
+		&:nth-child(odd) {
+			background-color: honeydew;
+		}
+
+		&:hover {
+			background-color: white;
+			background-color: whitesmoke;
+			background-color: lightgreen;
+		}
+	}
+
+	.amount {
+		text-align: right;
+	}
+}
