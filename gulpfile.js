@@ -160,9 +160,9 @@ options = {
 'no-warn': 1,
 'property-units': 1,
 'declarations-before-nesting': 1,
-'force-attribute-nesting': 1,
+'force-attribute-nesting': 0,
 'force-element-nesting': 0,
-'force-pseudo-nesting': 1,
+'force-pseudo-nesting': 0,
 'class-name-format': 1,
 'function-name-format': 1,
 'id-name-format': 1,
@@ -187,7 +187,9 @@ options = {
 ],
 'max-line-length': 0,
 'max-file-line-count': 1,
-'nesting-depth': 1,
+'nesting-depth': [
+	1, { "max-depth": 4 }
+],
 'property-sort-order': 0,
 'pseudo-element': 1,
 'quotes': 1,
