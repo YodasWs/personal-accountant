@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('transactionsTable')
+angular.module('compTransactionsTable')
 .component('transactionsTable', {
 	templateUrl: 'components/transactions-table/transactions-table.html',
 	controller() {
