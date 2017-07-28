@@ -6,22 +6,23 @@ window.myBooks = {
 			description: 'Lowe\'s',
 			category: 'Home Improvement',
 			amount: 52.23,
-			account: '0173',
+			account: '0001',
 			date: new Date(2017, 5, 20),
 		},
 		{
 			description: 'Target',
 			category: 'Groceries',
 			amount: 30.02,
-			account: '0173',
+			account: '0001',
 			date: new Date(2017, 5, 21),
 		},
 	]
 }
 
 angular.module('myBooks', [
-	'transactionsTable',
+	'compTransactionsTable',
 	'pageEditTransaction',
+	'compEquityTable',
 	'pageAccounts',
 	'pageOrgs',
 	'ngRoute',
