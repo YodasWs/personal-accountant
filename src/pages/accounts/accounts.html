@@ -1,11 +1,9 @@
 <h2>Bank Accounts</h2>
 <ul>
-	<li ng-repeat="account in $ctrl.accounts">
+	<li ng-repeat="account in accounts">
 		<dl>
-			<dt>Account</dt>
-			<dd>{{account.id}}</dd>
-			<dt>Balance</dt>
-			<dd>{{account.balance}}</dd>
+			<dt>{{account.name}} ({{account.id}})</dt>
+			<dd>{{account.balance | currency}}</dd>
 		</dl>
 	</li>
 </ul>
