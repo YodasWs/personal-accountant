@@ -35,3 +35,34 @@ a:link,
 a:visited {
 	color: dodgerblue;
 }
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid green;
+
+	thead {
+		background: whitesmoke;
+	}
+
+	td,
+	th {
+		padding: 2px 5px;
+	}
+
+	tbody tr {
+		border-top: 1px solid green;
+
+		&:nth-child(odd) {
+			background-color: honeydew;
+		}
+
+		&:hover {
+			background-color: lightgreen;
+		}
+	}
+
+	.amount {
+		text-align: right;
+	}
+}
