@@ -217,8 +217,8 @@ options = {
 'attr-name-style': 'dash',
 'attr-no-dup': true,
 'attr-req-value': false,
-'class-name-style': 'dash',
 'class-no-dup': true,
+'class-style': 'dash',
 'doctype-html5': true,
 'fig-req-figcaption': false,
 'head-req-title': true,
@@ -445,10 +445,7 @@ gulp.task('transfer:res', () => {
 
 gulp.task('transfer-files', gulp.parallel('transfer:assets', 'transfer:res'))
 
-gulp.task('compile', gulp.series(
-	'lint',
-	gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files')
-))
+gulp.task('compile', gulp.parallel('compile:html', 'compile:js', 'compile:sass', 'transfer-files'))
 
 gulp.task('watch', () => {
 	gulp.watch('./src/**/*.{sa,sc,c}ss', gulp.series('compile:sass'))
@@ -518,6 +515,7 @@ angular.module('${camelCase('comp-'+argv.name)}')
 ))
 
 gulp.task('default', gulp.series(
+	'lint',
 	'compile',
 	'serve'
 	// Ugh, can't watch on Windows yet >_<
