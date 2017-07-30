@@ -348,10 +348,10 @@ function runTasks(task) {
 		],
 		tasks: [
 			'lintSass',
-			'compileSass',
-			'prefixCSS',
 			'sort',
 			'concat',
+			'compileSass',
+			'prefixCSS',
 			'rmLines',
 		],
 		fileType: 'css'
