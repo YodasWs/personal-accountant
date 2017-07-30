@@ -129,7 +129,7 @@ options = {
 'one-declaration-per-line': 1,
 'empty-line-between-blocks': 1,
 'single-line-per-selector': 1,
-'no-attribute-selectors': 1,
+'no-attribute-selectors': 0,
 'no-color-hex': 0,
 'no-color-keywords': 0,
 'no-color-literals': 1,
@@ -149,10 +149,10 @@ options = {
 'no-invalid-hex': 1,
 'no-mergeable-selectors': 1,
 'no-misspelled-properties': 1,
-'no-qualifying-elements': 1,
+'no-qualifying-elements': 0,
 'no-trailing-whitespace': 1,
 'no-trailing-zero': 1,
-'no-transition-all': 1,
+'no-transition-all': 0,
 'no-universal-selectors': 0,
 'no-url-domains': 1,
 'no-url-protocols': 1,
@@ -439,6 +439,7 @@ gulp.task('transfer:res', () => {
 	return gulp.src([
 		'./node_modules/angular/angular.min.js{,.map}',
 		'./node_modules/angular-route/angular-route.min.js{,.map}',
+		'./node_modules/jquery/dist/jquery.min.{js,map}',
 	])
 		.pipe(gulp.dest(path.join(options.dest, 'res')))
 })
