@@ -1,0 +1,58 @@
+[ng-view='page-calcs'] {
+	section {
+		border: 1px solid black;
+		border-radius: 10px;
+		padding: 10px;
+		display: flex;
+		margin: 1rem auto 0;
+		max-width: 500px;
+		flex-flow: column nowrap;
+
+		> * {
+			flex: 0 0 auto;
+		}
+
+		h1 {
+			margin-top: 0;
+		}
+	}
+
+	label {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		margin-top: 0.5rem;
+
+		small {
+			margin-left: 1em;
+		}
+
+		input {
+			text-align: right;
+			border: solid green;
+			border-width: 0 0 1px;
+			width: 6em;
+		}
+	}
+
+	button,
+	input {
+		font-size: 1em;
+	}
+
+	span.money::before {
+		display: inline;
+		content: '$';
+	}
+
+	span.percent {
+		&::after {
+			display: inline;
+			content: '%';
+		}
+
+		input {
+			width: 5em;
+		}
+	}
+}

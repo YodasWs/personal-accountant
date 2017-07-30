@@ -24,6 +24,7 @@ angular.module('myBooks', [
 	'pageEditTransaction',
 	'compEquityTable',
 	'pageAccounts',
+	'pageCalcs',
 	'pageOrgs',
 	'ngRoute',
 ])

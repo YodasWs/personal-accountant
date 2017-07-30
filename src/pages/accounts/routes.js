@@ -5,7 +5,7 @@ angular.module('pageAccounts')
 	$routeProvider.when('/account/:id', {
 		templateUrl: 'pages/accounts/account.html',
 	})
-	$routeProvider.when('/accounts', {
+	$routeProvider.when('/accounts/', {
 		templateUrl: 'pages/accounts/accounts.html',
 		controller: 'ctrlAccounts',
 		controllerAs: '$ctrl',

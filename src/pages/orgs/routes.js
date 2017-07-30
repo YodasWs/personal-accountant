@@ -5,7 +5,7 @@ angular.module('pageOrgs')
 	$routeProvider.when('/org/:id', {
 		templateUrl: 'pages/orgs/orgs.html',
 	})
-	$routeProvider.when('/orgs', {
+	$routeProvider.when('/orgs/', {
 		templateUrl: 'pages/orgs/orgs.html',
 	})
 }])
