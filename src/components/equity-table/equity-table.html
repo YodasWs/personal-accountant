@@ -3,17 +3,17 @@
 <tr>
 	<th>Transaction</th>
 	<th>Date</th>
-	<th>0001</th>
-	<th>0002</th>
+	<th ng-repeat="account in $ctrl.accounts">{{account.id}}</th>
 	<th>Equity</th>
 </tr>
 </thead>
 <tbody ng-if="$ctrl.transactions">
-<tr ng-repeat="transaction in $ctrl.transactions">
+<tr ng-repeat="transaction in $ctrl.transactions | filter:($ctrl.filter || undefined)">
 	<td>{{transaction.description}}</td>
 	<td>{{ transaction.date | strDate }}</td>
-	<td class="amount">{{transaction.amount | currency}}</td>
-	<td class="amount">{{0 | currency}}</td>
+	<td class="amount" ng-repeat="account in $ctrl.accounts">
+		{{check = (transaction.account == account.id) ? transaction.amount : '-' | currency}}
+	</td>
 	<td class="amount">{{transaction.amount | currency}}</td>
 </tr>
 </tbody>

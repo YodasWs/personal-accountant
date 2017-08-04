@@ -1,4 +1,13 @@
 equity-table {
 	display: block;
 	display: contents;
+
+	td.amount:empty {
+		text-align: center;
+
+		&::before {
+			display: inline;
+			content: '\2014';
+		}
+	}
 }

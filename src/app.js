@@ -16,12 +16,33 @@ window.myBooks = {
 			account: '0001',
 			date: new Date(2017, 5, 21),
 		},
-	]
+		{
+			description: 'Hulu',
+			category: 'Entertainment',
+			amount: 8.56,
+			account: '0002',
+			date: new Date(2017, 8, 1),
+			monthly: true,
+		},
+	],
+	accounts: [
+		{
+			id: '0001',
+			name: 'Bill Pay',
+			balance: 1200,
+		},
+		{
+			id: '0002',
+			name: 'Everyday',
+			balance: 808,
+		},
+	],
 }
 
 angular.module('myBooks', [
 	'compTransactionsTable',
 	'pageEditTransaction',
+	'pageMonthlyExpenses',
 	'compEquityTable',
 	'pageAccounts',
 	'pageCalcs',
@@ -32,6 +53,10 @@ angular.module('myBooks', [
 	$locationProvider.html5Mode(true);
 	$routeProvider.when('/', {
 		templateUrl: 'pages/home.html',
+		controllerAs: '$ctrl',
+		controller() {
+			this.transactions = myBooks.transactions
+		},
 	})
 	.otherwise({redirectTo: '/'})
 }])
