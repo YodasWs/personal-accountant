@@ -12,7 +12,7 @@
 </tr>
 </thead>
 <tbody ng-if="$ctrl.transactions">
-<tr ng-repeat="transaction in $ctrl.transactions">
+<tr ng-repeat="transaction in $ctrl.transactions | filter:($ctrl.filter || undefined) | orderBy:($ctrl.orderBy || 'date')">
 	<td>{{ transaction.date | strDate }}</td>
 	<td>{{transaction.description}}</td>
 	<td>{{transaction.category}}</td>

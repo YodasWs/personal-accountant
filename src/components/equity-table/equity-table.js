@@ -8,6 +8,7 @@ angular.module('compEquityTable')
 	},
 	bindings: {
 		'transactions': '=',
+		'orderBy': '=',
 		'filter': '=',
 	},
 })
