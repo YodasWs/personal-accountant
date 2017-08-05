@@ -319,6 +319,7 @@ options = {
 			'**/*.{sa,sc,c}ss',
 		],
 		js:[
+			'js/**/*.js',
 			'**/module.js',
 			'{components,pages}/**/*.js',
 			'app.js',

@@ -5,21 +5,44 @@ window.myBooks = {
 		{
 			description: 'Lowe\'s',
 			category: 'Home Improvement',
-			amount: 52.23,
+			amount: -52.23,
 			account: '0001',
 			date: new Date(2017, 5, 20),
 		},
 		{
 			description: 'Target',
 			category: 'Groceries',
-			amount: 30.02,
+			amount: -30.02,
 			account: '0001',
 			date: new Date(2017, 5, 21),
 		},
 		{
+			description: 'Pay',
+			category: 'Pay',
+			amount: 500,
+			account: '0001',
+			date: new Date(2017, 7, 28),
+		},
+		{
 			description: 'Hulu',
 			category: 'Entertainment',
-			amount: 8.56,
+			amount: -8.56,
+			account: '0002',
+			date: new Date(2017, 6, 1),
+			monthly: true,
+		},
+		{
+			description: 'Hulu',
+			category: 'Entertainment',
+			amount: -8.56,
+			account: '0002',
+			date: new Date(2017, 7, 1),
+			monthly: true,
+		},
+		{
+			description: 'Hulu',
+			category: 'Entertainment',
+			amount: -8.56,
 			account: '0002',
 			date: new Date(2017, 8, 1),
 			monthly: true,
@@ -47,6 +70,7 @@ angular.module('myBooks', [
 	'pageAccounts',
 	'pageCalcs',
 	'pageOrgs',
+	'filters',
 	'ngRoute',
 ])
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
@@ -60,15 +84,3 @@ angular.module('myBooks', [
 	})
 	.otherwise({redirectTo: '/'})
 }])
-.filter('strDate', () => {
-	return function(date) {
-		if (typeof date === 'string') {
-			date = new Date(date)
-		}
-		return date.toLocaleString(undefined, {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
-})
