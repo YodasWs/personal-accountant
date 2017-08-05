@@ -4,6 +4,7 @@
 		<dl>
 			<dt>{{account.name}} ({{account.id}})</dt>
 			<dd>{{account.balance | currency}}</dd>
+			<dd><transactions-table transactions="transactions" filter="{account:account.id}"></transactions-table></dd>
 		</dl>
 	</li>
 </ul>

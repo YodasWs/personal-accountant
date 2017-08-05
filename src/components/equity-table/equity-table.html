@@ -7,14 +7,15 @@
 	<th>Equity</th>
 </tr>
 </thead>
-<tbody ng-if="$ctrl.transactions">
+<tbody ng-if="$ctrl.transactions | filter:($ctrl.filter || undefined)">
 <tr ng-repeat="transaction in $ctrl.transactions | filter:($ctrl.filter || undefined) | orderBy:($ctrl.orderBy || 'date')">
 	<td>{{transaction.description}}</td>
 	<td>{{ transaction.date | strDate }}</td>
 	<td class="amount" ng-repeat="account in $ctrl.accounts">
-		{{check = (transaction.account == account.id) ? transaction.amount : '-' | currency}}
+		{{transaction.account == account.id ? transaction.amount : '' | strAccounting}}
 	</td>
-	<td class="amount">{{transaction.amount | currency}}</td>
+	<td class="amount">{{transaction.amount | strAccounting}}</td>
 </tr>
+<!-- TODO: Add Row with Totals -->
 </tbody>
 </table>

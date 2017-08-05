@@ -1,1 +1,1 @@
-<h2>Bank Accounts</h2><ul><li ng-repeat="account in accounts"><dl><dt>{{account.name}} ({{account.id}})</dt><dd>{{account.balance | currency}}</dd></dl></li></ul>
+<h2>Bank Accounts</h2><ul><li ng-repeat="account in accounts"><dl><dt>{{account.name}} ({{account.id}})</dt><dd>{{account.balance | currency}}</dd><dd><transactions-table transactions="transactions" filter="{account:account.id}"></transactions-table></dd></dl></li></ul>
