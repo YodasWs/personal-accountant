@@ -95,7 +95,11 @@ angular.module('pageCalcs')
 			e.out.unshift(e.out[0] - p)
 			break;
 		case 'monthly':
-			e.out.push(r * p / (1 - Math.pow(1 + r, -t)))
+			if (r > 0) {
+				e.out.push(r * p / (1 - Math.pow(1 + r, -t)))
+			} else {
+				e.out.push(p / t)
+			}
 			break;
 		case 'period':
 			if (!Number.isNumeric(r)) e.out.push('&empty;')
