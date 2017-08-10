@@ -20,6 +20,10 @@ body {
 	> * {
 		padding: 5px calc(5px * 2.5);
 	}
+
+	@media (max-width: 1200px) {
+		border: 0 none;
+	}
 }
 
 h1,
@@ -41,6 +45,7 @@ table {
 	border-collapse: collapse;
 	border: 1px solid green;
 
+	tfoot,
 	thead {
 		background: whitesmoke;
 	}
@@ -55,6 +60,10 @@ table {
 
 		&:nth-child(odd) {
 			background-color: honeydew;
+		}
+
+		&:last-child {
+			border-bottom: 1px solid green;
 		}
 
 		&:hover {

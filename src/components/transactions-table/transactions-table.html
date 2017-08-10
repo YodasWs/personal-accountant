@@ -20,4 +20,10 @@
 	<td class="amount">{{transaction.amount | strAccounting}}</td>
 </tr>
 </tbody>
+<tfoot>
+<tr>
+	<td colspan="4"></td>
+	<td class="amount">{{$ctrl.transactions | filter:($ctrl.filter || undefined) | sum | strAccounting}}</td>
+</tr>
+</tfoot>
 </table>

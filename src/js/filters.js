@@ -29,3 +29,13 @@ angular.module('filters', [
 		return amt !== 0 ? `$${str}` : '\u2014'
 	}
 })
+.filter('sum', () => {
+	return function(data, account) {
+		let sum = 0
+		data.forEach((t) => {
+			if (!angular.isUndefined(account) && t.account === account) sum += t.amount
+			else if (angular.isUndefined(account)) sum += t.amount
+		})
+		return sum
+	}
+})
