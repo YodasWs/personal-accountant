@@ -23,13 +23,13 @@ angular.module('filters', [
 			amt = Number.parseInt(amt, 10)
 		}
 		if (Number.isNaN(amt) || typeof amt !== 'number') {
-			return '\u2014'
+			return ''
 		}
 		let str = Math.abs(amt).toFixed(2)
 		if (amt < 0) {
 			str = `(${str})`
 		}
-		return amt !== 0 ? `$${str}` : '\u2014'
+		return amt !== 0 ? str : ''
 	}
 })
 .filter('sum', () => {

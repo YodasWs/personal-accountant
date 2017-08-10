@@ -71,8 +71,20 @@ table {
 		}
 	}
 
-	.amount {
+	td.amount {
 		text-align: right;
+		white-space: nowrap;
+
+		&:not(:empty)::before {
+			display: inline;
+			content: '$';
+			float: left;
+		}
+
+		&:empty::after {
+			display: inline;
+			content: '\2014';
+		}
 	}
 
 	.date {

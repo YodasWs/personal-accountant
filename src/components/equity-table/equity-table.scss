@@ -23,15 +23,6 @@ equity-table {
 		}
 	}
 
-	td.amount:empty {
-		text-align: center;
-
-		&::before {
-			display: inline;
-			content: '\2014';
-		}
-	}
-
 	tfoot td {
 		text-align: right;
 	}
