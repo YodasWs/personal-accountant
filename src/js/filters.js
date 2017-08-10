@@ -16,6 +16,9 @@ angular.module('filters', [
 })
 .filter('strAccounting', () => {
 	return (amt) => {
+		if (typeof amt === 'object' && typeof amt.amount === 'number') {
+			amt = amt.amount
+		}
 		if (typeof amt === 'string') {
 			amt = Number.parseInt(amt, 10)
 		}

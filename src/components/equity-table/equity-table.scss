@@ -1,6 +1,27 @@
 equity-table {
 	display: block;
-	display: contents;
+	max-width: 100%;
+	overflow: auto;
+	border: 1px solid green;
+
+	table {
+		border: 0 none;
+	}
+
+	thead th {
+		vertical-align: bottom;
+		white-space: nowrap;
+
+		u {
+			text-decoration: none;
+			font-size: 0.7em;
+		}
+
+		b {
+			font-weight: normal;
+			font-size: 0.7em;
+		}
+	}
 
 	td.amount:empty {
 		text-align: center;

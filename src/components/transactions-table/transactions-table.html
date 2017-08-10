@@ -13,7 +13,7 @@
 </thead>
 <tbody ng-if="$ctrl.transactions | filter:($ctrl.filter || undefined)">
 <tr ng-repeat="transaction in $ctrl.transactions | filter:($ctrl.filter || undefined) | orderBy:($ctrl.orderBy || 'date')">
-	<td>{{ transaction.date | strDate }}</td>
+	<td class="date">{{ transaction.date | strDate }}</td>
 	<td>{{transaction.description}}</td>
 	<td>{{transaction.category}}</td>
 	<td>{{transaction.account}}</td>
