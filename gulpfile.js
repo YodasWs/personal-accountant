@@ -1,4 +1,12 @@
+/**
+ * Sam Grundman's Super Awesome Gulp Web Development Toolset
+ *
+ * @version 1.0.4
+ */
 'use strict';
+
+const fs = require('fs')
+const packageJson = JSON.parse(fs.readFileSync('./package.json'))
 
 function camelCase(name) {
 	name = name.split('-')
@@ -41,6 +49,11 @@ const argv = require('yargs')
 			required: true,
 			alias: 'n',
 		},
+		section: {
+			describe: 'Section under which to add page',
+			default: '',
+			alias: 's',
+		},
 	})
 	.command('lint', 'Lint all JavaScript and Sass/SCSS files')
 	.command('transfer-files', 'Transfer all static assets and resources to docs folder')
@@ -59,7 +72,6 @@ plugins = require('gulp-load-plugins')({
 		'gulp-run-command': 'cli',
 		'gulp-html-lint': 'lintHTML',
 		'gulp-sass-lint': 'lintSass',
-		'gulp-webserver': 'server',
 		'gulp-htmlmin': 'compileHTML',
 		'gulp-eslint': 'lintES',
 		'gulp-babel': 'compileJS',
@@ -130,6 +142,7 @@ options = {
 'no-console': 0,
 'no-undef': 0,
 'no-tabs': 0,
+'no-var': 2,
 'semi': 0,
 
 		}
@@ -161,7 +174,7 @@ options = {
 	]}
 ],
 'no-empty-rulesets': 1,
-'no-extends': 1,
+'no-extends': 0,
 'no-ids': 1,
 'no-important': 1,
 'no-invalid-hex': 1,
@@ -302,8 +315,8 @@ options = {
 			path: 'min.js'
 		}
 	},
-	server:{
-		path: '/personal-accountant/',
+	webserver:{
+		path: `/${packageJson.name}/`,
 		directoryListing: false,
 		defaultFile: 'index.html',
 		fallback: 'index.html',
@@ -397,8 +410,8 @@ function runTasks(task) {
 			'lintES',
 			'sort',
 			'concat',
-			'rmLines',
 			'compileJS',
+			'rmLines',
 		],
 		fileType: 'js'
 	},
@@ -418,7 +431,6 @@ function runTasks(task) {
 	{
 		name: 'transfer:assets',
 		src: [
-			'./node_modules/font-awesome/fonts/fontawesome-webfont.*',
 			'./src/**/*.jp{,e}g',
 			'./src/**/*.json',
 			'./src/**/*.gif',
@@ -466,13 +478,18 @@ gulp.task('lint:js', () => {
 
 gulp.task('lint', gulp.parallel('lint:sass', 'lint:js', 'lint:html'))
 
-gulp.task('transfer:res', () => {
-	return gulp.src([
+gulp.task('transfer:res', (done) => {
+	gulp.src([
 		'./node_modules/angular/angular.min.js{,.map}',
 		'./node_modules/angular-route/angular-route.min.js{,.map}',
 		'./node_modules/jquery/dist/jquery.min.{js,map}',
 	])
 		.pipe(gulp.dest(path.join(options.dest, 'res')))
+	gulp.src([
+		'./node_modules/font-awesome/fonts/fontawesome-webfont.*',
+	])
+		.pipe(gulp.dest(path.join(options.dest, 'fonts')))
+	done()
 })
 
 gulp.task('transfer-files', gulp.parallel('transfer:assets', 'transfer:res'))
@@ -487,32 +504,44 @@ gulp.task('watch', () => {
 
 gulp.task('serve', () => {
 	return gulp.src('./docs/')
-		.pipe(plugins.server(options.server))
+		.pipe(plugins.webserver(options.webserver))
 })
 
 gulp.task('generate:page', gulp.series(
+	(done) => {
+		if (argv.section) {
+			argv.section += '/'
+		}
+		done()
+	},
 	plugins.cli([
-		`mkdir -pv ./src/pages/${argv.name}`,
-		`touch -a ./src/pages/${argv.name}/${argv.name}.html`,
-		`touch -a ./src/pages/${argv.name}/${argv.name}.scss`,
+		`mkdir -pv ./src/pages/${argv.section}/${argv.name}`,
+		`touch -a ./src/pages/${argv.section}/${argv.name}/${argv.name}.scss`,
 	]),
+	() => {
+		const str = `<h2>${argv.name}</h2>\n`
+		return plugins.newFile(`${argv.name}.html`, str, { src: true })
+			.pipe(gulp.dest(`./src/pages/${argv.section}${argv.name}`))
+	},
 	() => {
 		const str = `'use strict';\n\nangular.module('${camelCase('page-'+argv.name)}', [\n\t'ngRoute',\n])\n`
 		return plugins.newFile('module.js', str, { src: true })
-			.pipe(gulp.dest(`./src/pages/${argv.name}`))
+			.pipe(gulp.dest(`./src/pages/${argv.section}${argv.name}`))
 	},
 	() => {
 		const str = `'use strict';\n
 angular.module('${camelCase('page-'+argv.name)}')
 .config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-	$routeProvider.when('/${argv.name}/', {
-		templateUrl: 'pages/${argv.name}/${argv.name}.html',
-	})
+\t$routeProvider.when('/${argv.section}${argv.name}/', {
+\t\ttemplateUrl: 'pages/${argv.section}${argv.name}/${argv.name}.html',
+\t\tcontrollerAs: '$ctrl',
+\t\tcontroller() {\n\t\t},
+\t})
 }])\n`
 		return plugins.newFile(`routes.js`, str, { src: true })
-			.pipe(gulp.dest(`./src/pages/${argv.name}`))
+			.pipe(gulp.dest(`./src/pages/${argv.section}${argv.name}`))
 	},
-	// TODO: Add to app.module.js
+	// TODO: Add to app.js
 	plugins.cli([
 		`git status`,
 	])
@@ -534,13 +563,13 @@ gulp.task('generate:component', gulp.series(
 angular.module('${camelCase('comp-'+argv.name)}')
 .component('${camelCase(argv.name)}', {
 \ttemplateUrl: 'components/${argv.name}/${argv.name}.html',
-\tcontroller() {
-\t}
+\tcontrollerAs: '$ctrl',
+\tcontroller() {\n\t}
 })\n`
 		return plugins.newFile(`${argv.name}.js`, str, { src: true })
 			.pipe(gulp.dest(`./src/components/${argv.name}`))
 	},
-	// TODO: Add to app.module.js
+	// TODO: Add to app.js
 	plugins.cli([
 		`git status`,
 	])
@@ -641,7 +670,7 @@ body > nav {\n\tdisplay: flex;\n\tflex-flow: row wrap;\n\tjustify-content: space
 		}
 		const str = `<meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<base href="/personal-accountant/"/>
+<base href="/${packageJson.name}/"/>
 <link rel="stylesheet" href="min.css"/>
 <script src="res/jquery.min.js"></script>
 <script src="res/angular.min.js"></script>
