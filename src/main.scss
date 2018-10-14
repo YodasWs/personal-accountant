@@ -1,6 +1,6 @@
 * { box-sizing: border-box; }
 
-:root { font-family: 'Trebuchet MS', 'Open Sans', 'Helvetica Neue', sans-serif; }
+:root { font-family: "Trebuchet MS", "Open Sans", "Helvetica Neue", sans-serif; }
 
 html {
 	height: 100%;
@@ -77,13 +77,13 @@ table {
 
 		&:not(:empty)::before {
 			display: inline;
-			content: '$';
+			content: "$";
 			float: left;
 		}
 
 		&:empty::after {
 			display: inline;
-			content: '\2014';
+			content: "\2014";
 		}
 	}
 

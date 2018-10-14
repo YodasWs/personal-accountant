@@ -1,4 +1,4 @@
-[ng-view='page-calcs'] {
+[ng-view="page-calcs"] {
 	section {
 		border: 1px solid black;
 		border-radius: 10px;
@@ -42,13 +42,13 @@
 
 	span.money::before {
 		display: inline;
-		content: '$';
+		content: "$";
 	}
 
 	span.percent {
 		&::after {
 			display: inline;
-			content: '%';
+			content: "%";
 		}
 
 		input {
