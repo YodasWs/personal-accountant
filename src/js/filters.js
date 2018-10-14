@@ -42,3 +42,18 @@ angular.module('filters', [
 		return sum
 	}
 })
+.filter('equity', () => {
+	return function(data, account) {
+		let sum = 0
+		if (!data.forEach) data = [data]
+		data.forEach((t) => {
+			let multiplier = 1
+			myBooks.accounts.forEach((a) => {
+				if (a.id === t.account && a.ela === 'liability') multiplier *= -1
+			})
+			if (!angular.isUndefined(account) && t.account === account) sum += multiplier * t.amount
+			else if (angular.isUndefined(account)) sum += multiplier * t.amount
+		})
+		return sum
+	}
+})

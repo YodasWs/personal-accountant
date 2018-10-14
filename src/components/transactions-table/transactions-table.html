@@ -20,7 +20,7 @@
 	<td class="amount">{{transaction.amount | strAccounting}}</td>
 </tr>
 </tbody>
-<tfoot>
+<tfoot ng-if="($ctrl.filter || undefined)">
 <tr>
 	<td colspan="4"></td>
 	<td class="amount">{{$ctrl.transactions | filter:($ctrl.filter || undefined) | sum | strAccounting}}</td>

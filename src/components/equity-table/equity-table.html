@@ -18,7 +18,7 @@
 	<td class="amount" ng-repeat="account in $ctrl.accounts">
 		{{transaction.account == account.id ? transaction : '' | strAccounting}}
 	</td>
-	<td class="amount">{{transaction | strAccounting}}</td>
+	<td class="amount">{{transaction | equity | strAccounting}}</td>
 </tr>
 </tbody>
 <tfoot>
@@ -28,7 +28,7 @@
 	<td class="amount" ng-repeat="account in $ctrl.accounts">
 		{{$ctrl.transactions | filter:($ctrl.filter || undefined) | filter:{account:account.id} | sum | strAccounting}}
 	</td>
-	<td class="amount">{{$ctrl.transactions | filter:($ctrl.filter || undefined) | sum | strAccounting}}</td>
+	<td class="amount">{{$ctrl.transactions | filter:($ctrl.filter || undefined) | equity | strAccounting}}</td>
 </tr>
 </tfoot>
 </table>

@@ -50,7 +50,7 @@ window.myBooks = {
 		{
 			description: 'Tuition',
 			category: 'Education',
-			amount: -5000,
+			amount: 5000,
 			account: '0003',
 			date: new Date(2017, 7, 21),
 		},
@@ -71,7 +71,7 @@ window.myBooks = {
 		{
 			description: 'Loan Payment',
 			category: 'Loan Payment',
-			amount: 100,
+			amount: -100,
 			account: '0003',
 			date: new Date(2017, 8, 2),
 		},
