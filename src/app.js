@@ -107,6 +107,7 @@ angular.module('myBooks', [
 	'pageMonthlyExpenses',
 	'compEquityTable',
 	'pageAccounts',
+	'directives',
 	'pageCalcs',
 	'pageOrgs',
 	'filters',
